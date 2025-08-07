@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReadyCare - تسجيل الدخول</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.8) 0%, rgba(0, 86, 179, 0.8) 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .logo-container {
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(0, 123, 255, 0.8);
+      box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .welcome-text {
+      font-size: 22px; /* تم تكبير الخط لاسم المشروع الجديد */
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: rgba(0, 123, 255, 0.8);
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+      text-align: right;
+      direction: rtl;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: rgba(0, 123, 255, 0.8);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.8) 0%, rgba(0, 86, 179, 0.8) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .error-message {
+      color: #e74c3c;
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(231, 76, 60, 0.1);
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 20px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-container {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      .logo {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .welcome-text {
+        font-size: 18px;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+      
+      .footer {
+        position: relative;
+        margin-top: 30px;
+        bottom: auto;
+        left: auto;
+        transform: none;
+      }
+    }
+
+    /* تأثيرات إضافية */
+    .form-group {
+      position: relative;
+    }
+
+    .form-group::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: rgba(0, 123, 255, 0.8);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .form-group:focus-within::after {
+      width: 100%;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="logo-container">
+      <img src="logo.png" alt="شعار ReadyCare" class="logo">
+    </div>
+    
+    <div class="welcome-text">ReadyCare</div>
+    <div class="subtitle">نظام إدارة متقدم</div>
+    
+    <h2>تسجيل الدخول</h2>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="phone">رقم الجوال</label>
+        <input type="text" id="phone" placeholder="أدخل رقم الجوال" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">كلمة المرور</label>
+        <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
+      </div>
+      
+      <button type="submit" class="login-btn">
+        <span class="btn-text">تسجيل الدخول</span>
+        <div class="loading"></div>
+      </button>
+    </form>
+    
+    <div id="error" class="error-message"></div>
+  </div>
+
+  <div class="footer">
+    مهندس و مطور برامج / محمود مصطفى - موبايل 0558453363
+  </div>
+
+  <script>
+    // 🔒 منع كليك يمين
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
+
+    // 🔒 منع مفاتيح الأدوات المشهورة للمطورين
+    document.addEventListener('keydown', function (e) {
+      // F12
+      if (e.key === "F12") {
+        e.preventDefault();
+      }
+
+      // Ctrl + Shift + I أو Ctrl + Shift + J أو Ctrl + U
+      if ((e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || 
+          (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+      }
+    });
+
+    // نظام تسجيل الدخول
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const phone = document.getElementById('phone').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error');
+      const btnText = document.querySelector('.btn-text');
+      const loading = document.querySelector('.loading');
+      
+      // إخفاء رسالة الخطأ
+      errorDiv.style.display = 'none';
+      
+      // عرض حالة التحميل
+      btnText.style.display = 'none';
+      loading.style.display = 'block';
+      
+      // محاكاة تأخير الشبكة
+      setTimeout(() => {
+        // التحقق من بيانات تسجيل الدخول
+        if (phone === '0558453363' && password === '0558453363') {
+          // تسجيل دخول ناجح
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('userPhone', phone);
+          
+          // تأثير نجاح
+          btnText.textContent = 'تم بنجاح!';
+          btnText.style.display = 'block';
+          loading.style.display = 'none';
+          
+          // الانتقال إلى صفحة Dashboard
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1000);
+        } else {
+          // بيانات خاطئة
+          btnText.style.display = 'block';
+          loading.style.display = 'none';
+          
+          errorDiv.textContent = 'رقم الجوال أو كلمة المرور غير صحيحة';
+          errorDiv.style.display = 'block';
+          
+          // تأثير اهتزاز
+          document.querySelector('.login-container').style.animation = 'shake 0.5s ease-in-out';
+          setTimeout(() => {
+            document.querySelector('.login-container').style.animation = 'fadeIn 0.6s ease-out';
+          }, 500);
+        }
+      }, 1500);
+    });
+
+    // تأثير اهتزاز
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

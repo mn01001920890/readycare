@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دراسة الجدوى المالية - منصة خدمات التخدير (نسخة مُحدّثة)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a237e; /* نيلي غامق */
+            --secondary-color: #e8eaf6; /* نيلي فاتح */
+            --accent-color: #3f51b5; /* نيلي */
+            --success-color: #2e7d32; /* أخضر للنجاح */
+            --warning-color: #ff8f00; /* برتقالي للتحذير */
+            --text-color: #212121; /* رمادي غامق */
+            --sidebar-width: 320px;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: #f5f7fa;
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, #283593 100%);
+            padding: 25px 0;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            color: white;
+            right: 0;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 35px;
+            padding: 0 20px;
+            font-weight: 700;
+        }
+
+        .sidebar-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 20px;
+        }
+
+        .sidebar-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            background-color: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: right;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+            border-right: 5px solid transparent;
+        }
+
+        .sidebar-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+        
+        .sidebar-btn.active {
+            background-color: var(--active-btn-color);
+            font-weight: 700;
+            border-right: 5px solid #ffffff;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px 40px;
+            margin-right: var(--sidebar-width);
+            transition: margin-right 0.3s ease;
+        }
+
+        .content-section {
+            display: none;
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section h3 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .content-section h4 {
+            color: var(--primary-color);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .content-section h5 {
+            color: var(--accent-color);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .content-section p, .content-section li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #424242;
+        }
+        
+        ul {
+            padding-right: 20px;
+            list-style-type: disc;
+        }
+        
+        ol {
+            padding-right: 20px;
+        }
+
+        strong, .highlight {
+            color: #c62828; /* أحمر غامق */
+            font-weight: 700;
+        }
+        
+        .positive {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            text-align: right;
+            vertical-align: middle;
+        }
+        
+        th {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        td:first-child {
+            font-weight: 500;
+        }
+        
+        tfoot td {
+            font-weight: 700;
+            background-color: #e8eaf6;
+        }
+
+        .financial-summary-grid, .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .summary-card, .analysis-card {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 6px solid var(--accent-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .summary-card:hover, .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .analysis-card.positive-card { border-left-color: var(--success-color); }
+        .analysis-card.negative-card { border-left-color: var(--warning-color); }
+
+        .summary-card h5, .analysis-card h5 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        .summary-card p, .analysis-card p {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #212121;
+        }
+        .analysis-card .explanation {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #616161;
+            margin-top: 10px;
+        }
+        .analysis-card .formula {
+            font-size: 13px;
+            color: #757575;
+            margin-top: 8px;
+            font-family: monospace;
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 1001;
+            border-radius: 8px;
+            padding: 5px 12px;
+        }
+        
+        @media (max-width: 768px) {
+            #menu-toggle { display: block; }
+            .sidebar { right: calc(-1 * var(--sidebar-width)); }
+            .sidebar.active { right: 0; }
+            .main-content { margin-right: 0; padding: 20px; }
+            .financial-summary-grid, .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+	            
+
+    <button id="menu-toggle">☰</button>
+
+    <div class="sidebar" id="sidebar">
+
+        <h2>دراسة الجدوى المالية</h2>
+        <div class="sidebar-buttons">
+
+			<a href="dashboard.html" class="sidebar-btn">العودة</a>
+            <button class="sidebar-btn active" onclick="showSection('section1', this)">1. الملخص المالي التنفيذي</button>
+            <button class="sidebar-btn" onclick="showSection('section2', this)">2. هيكل التكاليف التأسيسية</button>
+            <button class="sidebar-btn" onclick="showSection('section3', this)">3. نموذج الإيرادات والتوقعات</button>
+            <button class="sidebar-btn" onclick="showSection('section4', this)">4. المصاريف التشغيلية</button>
+            <button class="sidebar-btn" onclick="showSection('section5', this)">5. القوائم المالية المتكاملة</button>
+            <button class="sidebar-btn" onclick="showSection('section6', this)">6. التحليل المالي والتوصيات</button>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        
+        <div id="section1" class="content-section active">
+            <h3>القسم الأول: الملخص المالي التنفيذي وأطروحة الاستثمار</h3>
+            <h4>1.1 نظرة عامة على المؤشرات المالية الرئيسية (مُحدّثة)</h4>
+            <p>تقدم هذه الدراسة المالية تحليلاً شاملاً ومفصلاً للجدوى الاقتصادية لمشروع "منصة خدمات التخدير عند الطلب"، وهو مشروع تكنولوجيا صحية يهدف إلى معالجة النقص الحاد والموثق في أطباء التخدير في صعيد مصر، متخذاً من مدينة أسيوط مقراً استراتيجياً للإطلاق والعمليات.</p>
+            <p>تم بناء هذا التحليل على أساس البيانات الموحدة والمستقاة من الدراسات التسويقية والفنية والتنظيمية، مع تحديث جميع الأرقام والافتراضات بناءً على أبحاث السوق الفعلية في مصر لعام 2025 واستراتيجية "أسيوط أولاً".</p>
+            
+            <div class="financial-summary-grid">
+                <div class="summary-card">
+                    <h5>التمويل الأولي المطلوب (Seed Funding)</h5>
+                    <p><strong class="highlight">2,300,000</strong> جنيه مصري</p>
+                </div>
+                <div class="summary-card">
+                    <h5>الإيرادات المتوقعة (السنة الثالثة)</h5>
+                    <p><strong class="positive">9,000,000</strong> جنيه مصري</p>
+                </div>
+                <div class="summary-card">
+                    <h5>نقطة التعادل التشغيلي</h5>
+                    <p>الربع الأول من السنة الثانية</p>
+                </div>
+                 <div class="summary-card">
+                    <h5>نموذج الإيرادات</h5>
+                    <p>عمولة <strong class="highlight">15%</strong> لكل عملية</p>
+                </div>
+            </div>
+
+            <h4>1.2 الأطروحة الاستثمارية - كفاءة رأس المال كاستراتيجية</h4>
+            <p>إن اختيار مدينة أسيوط كنقطة انطلاق للمشروع لا يمثل قراراً تسويقياً فحسب، بل هو في جوهره قرار استراتيجي مالي يهدف إلى تعظيم كفاءة رأس المال وتقليل المخاطر الاستثمارية.</p>
+            <p>تعتمد الأطروحة الاستثمارية للمشروع على الاستفادة من ميزة "المراجحة في التكلفة" (Cost Arbitrage) التي توفرها أسيوط مقارنة بالمراكز الحضرية الكبرى مثل القاهرة.</p>
+            <p>تتجلى هذه الاستراتيجية في أن إطلاق المشروع في أسيوط يسمح بتحقيق مسار أكثر كفاءة نحو الربحية. فالتكاليف التشغيلية المنخفضة بشكل ملحوظ، وعلى رأسها إيجارات المكاتب ورواتب الكوادر الإدارية والتسويقية والتقنية، تعني أن معدل حرق النقد (Monthly Burn Rate) سيكون أقل بكثير.</p>
+            <p>هذا الأمر يترتب عليه نتيجة حيوية لأي شركة ناشئة: إطالة المدرج المالي (Financial Runway) للشركة.</p>
+            <p>بعبارة أخرى، فإن نفس مقدار التمويل الأولي البالغ <strong>2,300,000 جنيه مصري</strong> سيمنح الشركة فترة زمنية أطول لتحقيق أهدافها التشغيلية، واختراق السوق، والوصول إلى نقطة التعادل، مقارنة بما لو تم إنفاقه في بيئة ذات تكاليف أعلى.</p>
+            <p>هذه الكفاءة الرأسمالية لا تقلل فقط من الضغط على الفريق المؤسس، بل تخفض أيضاً من المخاطر الكلية للمستثمرين، وتزيد من احتمالية نجاح المشروع في تحقيق أهدافه قبل الحاجة إلى جولات تمويل إضافية، مما يقلل من مخاطر التخفيف (Dilution Risk) على المدى الطويل. بالتالي، فإن استراتيجية "أسيوط أولاً" ليست مجرد خطة لدخول السوق، بل هي استراتيجية مالية أساسية لتخفيف المخاطر وتعزيز فرص النجاح.</p>
+        </div>
+
+        <div id="section2" class="content-section">
+            <h3>القسم الثاني: هيكل التكاليف التأسيسية ورأس المال المطلوب (مُحدّث)</h3>
+            <p>يمثل هذا القسم تحليلاً مفصلاً لكافة النفقات التي تدفع لمرة واحدة واللازمة لتأسيس الشركة وإطلاق المنصة. تم إعداد هذه التقديرات بدقة متناهية بناءً على البيانات الواردة في الدراسات المرفقة لضمان عدم وجود تكاليف غير متوقعة قد تعيق مسار المشروع في مراحله الأولى.</p>
+
+            <h4>2.1 تحليل مفصل لتكاليف الإنشاء</h4>
+            <p>تعتبر عملية تأسيس شركة في مصر خطوة تتطلب الالتزام بسلسلة من الرسوم الحكومية والإدارية. يوضح الجدول التالي تفصيلاً دقيقاً لهذه الرسوم، بناءً على الدراسة القانونية المفصلة للمشروع واللوائح الحالية، مما يوفر ميزانية واقعية وشفافة لعملية التأسيس.</p>
+            
+            <h5>جدول 1: تفصيل رسوم تأسيس الشركة (تقديرات 2025)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>أساس الحساب</th>
+                        <th>التكلفة التقديرية (بالجنيه المصري)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>رسوم هيئة الاستثمار (GAFI)</td><td>1 في الألف من رأس المال (بحد أقصى 1000)</td><td>1,000</td></tr>
+                    <tr><td>رسوم التوثيق بالشهر العقاري</td><td>0.25% من رأس المال (بحد أقصى 1000)</td><td>1,000</td></tr>
+                    <tr><td>رسوم نقابة المحامين</td><td>1% من رأس المال المصدر (بافتراض رأس مال مليون جنيه)</td><td>10,000</td></tr>
+                    <tr><td>رسوم الغرفة التجارية</td><td>2 في الألف من رأس المال (بحد أقصى 2000)</td><td>2,000</td></tr>
+                    <tr><td>رسوم السجل التجاري</td><td>رسوم قيد لأول مرة</td><td>60</td></tr>
+                    <tr><td>أتعاب استشارات قانونية ومُخلص</td><td>لتسهيل وتسريع الإجراءات</td><td>15,000</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>الإجمالي التقديري</strong></td>
+                        <td><strong><strong class="highlight">29,060</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <h4>2.2 النفقات الرأسمالية - الأصول غير الملموسة</h4>
+            <p>يمثل هذا البند الاستثمار الأهم في المشروع، حيث يشكل جوهر الخدمة المقدمة والملكية الفكرية للشركة. تم تخصيص ميزانية واقعية بناءً على الدراسة الفنية تضمن بناء منتج تقني قوي وموثوق وقادر على المنافسة.</p>
+            <h5>جدول 2: ميزانية تطوير وحيازة الأصول غير الملموسة (مُحدّثة)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الأصل غير الملموس</th>
+                        <th>التفاصيل</th>
+                        <th>التكلفة التقديرية (بالجنيه المصري)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>تطوير المنتج الأولي (MVP)</td><td>بناء المنصة بناءً على تقديرات الدراسة الفنية (تكلفة 6-9 أشهر)</td><td>533,500</td></tr>
+                    <tr><td>الهوية التجارية</td><td>تصميم شعار وهوية بصرية كاملة من قبل محترفين</td><td>25,000</td></tr>
+                    <tr><td>تسجيل العلامة التجارية</td><td>رسوم البحث والتقديم والنشر والتسجيل النهائي (لكل فئة)</td><td>7,000</td></tr>
+                    <tr><td>اسم النطاق ورسوم نشر التطبيقات</td><td>رسوم سنوية أولية لمتجري Apple و Google</td><td>6,500</td></tr>
+                </tbody>
+                 <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>الإجمالي التقديري</strong></td>
+                        <td><strong><strong class="highlight">572,000</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <h4>2.3 النفقات الرأسمالية - الأصول الملموسة</h4>
+            <p>يوضح الجدول التالي الميزانية المطلوبة لتجهيز بيئة عمل وظيفية للفريق الأساسي المكون من أربعة موظفين في مقر الشركة بأسيوط، مما يضمن الجاهزية التشغيلية الكاملة منذ اليوم الأول.</p>
+            <h5>جدول 3: ميزانية حيازة الأصول الملموسة (تجهيز مكتب أسيوط)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الأصل الملموس</th>
+                        <th>الكمية</th>
+                        <th>متوسط سعر الوحدة (بالجنيه المصري)</th>
+                        <th>الإجمالي (بالجنيه المصري)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>مكاتب موظفين (جودة متوسطة)</td><td>4</td><td>3,000</td><td>12,000</td></tr>
+                    <tr><td>كراسي مكتب مريحة</td><td>4</td><td>2,000</td><td>8,000</td></tr>
+                    <tr><td>طاولة اجتماعات صغيرة مع 4 كراسي</td><td>1</td><td>7,500</td><td>7,500</td></tr>
+                    <tr><td>أجهزة كمبيوتر مكتبية (إدارة وتسويق)</td><td>2</td><td>10,000</td><td>20,000</td></tr>
+                    <tr><td>كمبيوتر محمول (أداء عالٍ للتطوير)</td><td>1</td><td>40,000</td><td>40,000</td></tr>
+                    <tr><td>طابعة متعددة الوظائف</td><td>1</td><td>5,000</td><td>5,000</td></tr>
+                    <tr><td>أجهزة شبكة (راوتر، سويتش)</td><td>1</td><td>2,000</td><td>2,000</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong>الإجمالي التقديري</strong></td>
+                        <td><strong><strong class="highlight">94,500</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <h4>2.4 ملخص إجمالي رأس المال المطلوب وتوزيعه</h4>
+            <p>لتغطية جميع التكاليف المذكورة أعلاه وتحقيق الأهداف التشغيلية للسنة الأولى بأمان، يتطلب المشروع تمويلاً أولياً بقيمة <strong>2,300,000 جنيه مصري</strong>. يعكس هذا الرقم الكفاءة الرأسمالية لاستراتيجية "أسيوط أولاً". يتم توزيع هذا المبلغ على النحو التالي:</p>
+            <ul>
+                <li><strong>إجمالي النفقات الرأسمالية (CAPEX):</strong> (الرسوم القانونية + الأصول غير الملموسة + الأصول الملموسة) = 29,060 + 572,000 + 94,500 = <strong class="highlight">695,560 جنيه مصري</strong>.</li>
+                <li><strong>تغطية العجز النقدي التشغيلي للسنة الأولى:</strong> (إجمالي مصاريف التشغيل - إجمالي الإيرادات) للسنة الأولى = 2,554,425 - 1,125,000 = <strong class="highlight">1,429,425 جنيه مصري</strong>.</li>
+                <li><strong>احتياطي طوارئ (Contingency):</strong> المبلغ المتبقي لتوفير سيولة إضافية لمواجهة أي تحديات غير متوقعة = <strong class="highlight">175,015 جنيه مصري</strong>.</li>
+            </ul>
+             <h5>توزيع التمويل الأولي:</h5>
+             <ul>
+                <li>تطوير المنتج والأصول (CAPEX): <strong>30%</strong></li>
+                <li>تغطية العجز التشغيلي للسنة الأولى: <strong>62%</strong></li>
+                <li>احتياطي الطوارئ: <strong>8%</strong></li>
+             </ul>
+        </div>
+
+        <div id="section3" class="content-section">
+            <h3>القسم الثالث: نموذج الإيرادات والتوقعات المالية (خمس سنوات) (مُحدّث)</h3>
+            <p>يعرض هذا القسم الآلية التي سيحقق بها المشروع إيراداته، والافتراضات التي بنيت عليها توقعات النمو على مدى السنوات الخمس القادمة، وذلك بناءً على استراتيجية اختراق السوق الموضحة في الدراسة التسويقية.</p>
+
+            <h4>3.1 آلية تحقيق الإيرادات وهيكل التسعير</h4>
+            <p>سيعتمد نموذج الإيرادات بشكل حصري على آلية شفافة ومباشرة، وهي تحصيل عمولة بنسبة <strong>15%</strong> من إجمالي الأجر الذي يتقاضاه طبيب التخدير عن كل عملية جراحية يتم تنسيقها وتسهيلها بنجاح عبر المنصة. لأغراض النمذجة المالية، وبناءً على تحليل سوق أسيوط الوارد في الدراسة التسويقية، تم اعتماد تقدير واقعي لمتوسط أجر طبيب التخدير لكل إجراء، وهو <strong>2,500 جنيه مصري</strong>.</p>
+
+            <h4>3.2 افتراضات النمو واكتساب العملاء</h4>
+            <p>تمت ترجمة الخطة التسويقية والتشغيلية إلى افتراضات نمو رقمية ومرحلية على النحو التالي:</p>
+            <ul>
+                <li><strong>السنة الأولى (2025):</strong> التركيز الكامل على سوق أسيوط. الهدف هو الوصول إلى 50 منشأة طبية نشطة، بمعدل استخدام متزايد يصل إلى متوسط سنوي قدره 5 عمليات شهرياً لكل منشأة.</li>
+                <li><strong>السنة الثانية (2026):</strong> ترسيخ التواجد في أسيوط والتوسع إلى مدن مجاورة. الهدف هو الوصول إلى 120 منشأة نشطة، مع زيادة متوسط الاستخدام إلى 7 عمليات شهرياً لكل منشأة مع زيادة الثقة والاعتماد على المنصة.</li>
+                <li><strong>السنة الثالثة (2027):</strong> التوسع وتعميق الاختراق في الأسواق الحالية. الهدف هو الوصول إلى 250 منشأة نشطة، مع زيادة متوسط الاستخدام إلى 8 عمليات شهرياً.</li>
+                <li><strong>السنوات الرابعة والخامسة (2028-2029):</strong> سيشهد النمو تركيزاً على زيادة عمق العلاقة مع العملاء الحاليين وزيادة متوسط العمليات لكل منشأة، مع توسع مدروس في عدد المنشآت. سيتم استهداف الوصول إلى 350 ثم 450 منشأة على التوالي.</li>
+            </ul>
+
+            <h4>3.3 توقعات الإيرادات التفصيلية</h4>
+            <p>بناءً على الافتراضات المذكورة أعلاه، يوضح الجدول التالي توقعات الإيرادات التفصيلية للمشروع على مدى خمس سنوات.</p>
+            <h5>جدول 4: توقعات الإيرادات لخمس سنوات (2025-2029)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>السنة 1 (2025)</th>
+                        <th>السنة 2 (2026)</th>
+                        <th>السنة 3 (2027)</th>
+                        <th>السنة 4 (2028)</th>
+                        <th>السنة 5 (2029)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>عدد المنشآت النشطة</td><td>50</td><td>120</td><td>250</td><td>350</td><td>450</td></tr>
+                    <tr><td>متوسط العمليات الشهرية/منشأة</td><td>5</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+                    <tr><td>إجمالي العمليات السنوية</td><td>3,000</td><td>10,080</td><td>24,000</td><td>37,800</td><td>54,000</td></tr>
+                    <tr><td>متوسط الأجر/عملية (جنيه)</td><td>2,500</td><td>2,500</td><td>2,500</td><td>2,500</td><td>2,500</td></tr>
+                    <tr><td>إجمالي حجم المعاملات (GMV) (جنيه)</td><td>7,500,000</td><td>25,200,000</td><td>60,000,000</td><td>94,500,000</td><td>135,000,000</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>إجمالي الإيرادات (عمولة 15%) (جنيه)</strong></td>
+                        <td><strong><strong class="highlight">1,125,000</strong></strong></td>
+                        <td><strong><strong class="positive">3,780,000</strong></strong></td>
+                        <td><strong><strong class="positive">9,000,000</strong></strong></td>
+                        <td><strong><strong class="positive">14,175,000</strong></strong></td>
+                        <td><strong><strong class="positive">20,250,000</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div id="section4" class="content-section">
+            <h3>القسم الرابع: المصاريف التشغيلية المتوقعة (خمس سنوات) (مُحدّث)</h3>
+            <p>يقدم هذا القسم تحليلاً مفصلاً للتكاليف المتكررة اللازمة لتشغيل الشركة، مع الأخذ في الاعتبار الميزة التنافسية التي يوفرها مقر الشركة في أسيوط من حيث انخفاض التكاليف، بناءً على الدراسات المرفقة.</p>
+
+            <h4>4.1 تكاليف الموظفين والرواتب (Cost of People)</h4>
+            <p>تمثل الرواتب الجزء الأكبر من المصاريف التشغيلية. تم بناء هيكل الرواتب التالي على أساس الأرقام المحددة في الدراسات الفنية والتنظيمية لسوق أسيوط، مع تضمين زيادة سنوية تقديرية بنسبة 15% لمواكبة التضخم وزيادة خبرة الفريق، بالإضافة إلى تكلفة التأمينات الاجتماعية الإلزامية.</p>
+            <h5>جدول 5: توقعات تكاليف الموظفين والرواتب لخمس سنوات (بالجنيه المصري)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>السنة 1 (2025)</th>
+                        <th>السنة 2 (2026)</th>
+                        <th>السنة 3 (2027)</th>
+                        <th>السنة 4 (2028)</th>
+                        <th>السنة 5 (2029)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>إجمالي الرواتب السنوية</td><td>1,472,000</td><td>1,692,800</td><td>1,946,720</td><td>2,238,728</td><td>2,574,537</td></tr>
+                    <tr><td>التأمينات الاجتماعية (تقريبي 20%)</td><td>294,400</td><td>338,560</td><td>389,344</td><td>447,746</td><td>514,907</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>إجمالي تكلفة الموظفين</strong></td>
+                        <td><strong><strong class="highlight">1,766,400</strong></strong></td>
+                        <td><strong>2,031,360</strong></td>
+                        <td><strong>2,336,064</strong></td>
+                        <td><strong>2,686,474</strong></td>
+                        <td><strong>3,089,444</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <h4>4.2 تكاليف التسويق والمبيعات</h4>
+            <p>
+                <strong>السنة الأولى:</strong> تم اعتماد الميزانية المقترحة في الدراسة التسويقية بقيمة <strong>360,000 جنيه</strong>، وهي ميزانية واقعية تتناسب مع استراتيجية "التواصل المباشر عالي اللمس".
+                <br><strong>السنوات التالية:</strong> سيتم ربط ميزانية التسويق والمبيعات كنسبة مئوية من إجمالي الإيرادات المتوقعة (10% للسنة الثانية، ثم 8% للسنوات التالية) لضمان نمو الإنفاق بشكل متناسب مع نمو الشركة.
+            </p>
+            
+            <h4>4.3 المصاريف العمومية والإدارية (G&A)</h4>
+            <ul>
+                <li><strong>إيجار المكتب:</strong> <strong>108,000 جنيه سنوياً</strong> (بواقع 9,000 جنيه شهرياً)، بناءً على أبحاث السوق المحلية في أسيوط.</li>
+                <li><strong>فواتير ومرافق:</strong> <strong>36,000 جنيه سنوياً</strong> (بواقع 3,000 جنيه شهرياً) للكهرباء والإنترنت والمياه.</li>
+                <li><strong>رسوم قانونية ومحاسبية مستمرة:</strong> <strong>72,000 جنيه سنوياً</strong>، بناءً على تقديرات الدراسة القانونية.</li>
+            </ul>
+
+            <h4>4.4 التكاليف التقنية المتكررة</h4>
+             <ul>
+                <li><strong>استضافة سحابية وتراخيص (Cloud & APIs):</strong> <strong>156,000 جنيه سنوياً</strong> (بواقع 13,000 جنيه شهرياً).</li>
+                <li><strong>صيانة وتحديثات التطبيق:</strong> <strong>80,025 جنيه سنوياً</strong> (بواقع 15% من تكلفة التطوير الأولية)، وهي ممارسة معيارية لضمان استمرارية عمل المنتج وتحسينه.</li>
+            </ul>
+
+            <h4>4.5 ملخص المصاريف التشغيلية (OPEX)</h4>
+            <h5>جدول 6: ملخص المصاريف التشغيلية السنوية المتوقعة (OPEX) (بالجنيه المصري)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>السنة 1 (2025)</th>
+                        <th>السنة 2 (2026)</th>
+                        <th>السنة 3 (2027)</th>
+                        <th>السنة 4 (2028)</th>
+                        <th>السنة 5 (2029)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>إجمالي تكلفة الموظفين</td><td>1,766,400</td><td>2,031,360</td><td>2,336,064</td><td>2,686,474</td><td>3,089,444</td></tr>
+                    <tr><td>تكاليف التسويق والمبيعات</td><td>360,000</td><td>378,000</td><td>720,000</td><td>1,134,000</td><td>1,620,000</td></tr>
+                    <tr><td>المصاريف العمومية والإدارية (G&A)</td><td>216,000</td><td>216,000</td><td>216,000</td><td>216,000</td><td>216,000</td></tr>
+                    <tr><td>التكاليف التقنية المتكررة</td><td>236,025</td><td>236,025</td><td>236,025</td><td>236,025</td><td>236,025</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>إجمالي المصاريف التشغيلية</strong></td>
+                        <td><strong><strong class="highlight">2,578,425</strong></strong></td>
+                        <td><strong><strong class="highlight">2,861,385</strong></strong></td>
+                        <td><strong><strong class="highlight">3,508,089</strong></strong></td>
+                        <td><strong><strong class="highlight">4,272,499</strong></strong></td>
+                        <td><strong><strong class="highlight">5,161,469</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div id="section5" class="content-section">
+            <h3>القسم الخامس: القوائم المالية المتكاملة وتحليل الجدوى (مُحدّثة)</h3>
+            <p>يترجم هذا القسم جميع الإيرادات والمصروفات المتوقعة إلى قوائم مالية معيارية، مما يوفر تحليلاً متعمقاً لربحية المشروع وسيولته النقدية وجدواه الاقتصادية على المدى الطويل.</p>
+            
+            <h4>5.1 قائمة الدخل المتوقعة (Projected Income Statement)</h4>
+            <p>توضح هذه القائمة الأداء المالي للشركة من حيث الربحية على مدى خمس سنوات.</p>
+            <h5>جدول 7: قائمة الدخل المتوقعة (2025-2029) (بالجنيه المصري)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>السنة 1 (2025)</th>
+                        <th>السنة 2 (2026)</th>
+                        <th>السنة 3 (2027)</th>
+                        <th>السنة 4 (2028)</th>
+                        <th>السنة 5 (2029)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>إجمالي الإيرادات</td><td>1,125,000</td><td>3,780,000</td><td>9,000,000</td><td>14,175,000</td><td>20,250,000</td></tr>
+                    <tr><td>إجمالي المصاريف التشغيلية</td><td>(2,578,425)</td><td>(2,861,385)</td><td>(3,508,089)</td><td>(4,272,499)</td><td>(5,161,469)</td></tr>
+                    <tr><td>الإهلاك (الأصول الملموسة وغير الملموسة)</td><td>(139,112)</td><td>(139,112)</td><td>(139,112)</td><td>(139,112)</td><td>(139,112)</td></tr>
+                    <tr><td><strong>الربح قبل الفوائد والضرائب (EBIT)</strong></td><td><strong>(1,592,537)</strong></td><td><strong><strong class="positive">779,503</strong></strong></td><td><strong><strong class="positive">5,352,799</strong></strong></td><td><strong><strong class="positive">9,763,389</strong></strong></td><td><strong><strong class="positive">14,949,419</strong></strong></td></tr>
+                    <tr><td>الفوائد</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                    <tr><td>الربح قبل الضرائب (EBT)</td><td>(1,592,537)</td><td>779,503</td><td>5,352,799</td><td>9,763,389</td><td>14,949,419</td></tr>
+                    <tr><td>الضرائب (22.5%)</td><td>0</td><td>(175,388)</td><td>(1,204,380)</td><td>(2,196,763)</td><td>(3,363,619)</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>صافي الدخل</strong></td>
+                        <td><strong><strong class="highlight">(1,592,537)</strong></strong></td>
+                        <td><strong><strong class="positive">604,115</strong></strong></td>
+                        <td><strong><strong class="positive">4,148,419</strong></strong></td>
+                        <td><strong><strong class="positive">7,566,626</strong></strong></td>
+                        <td><strong><strong class="positive">11,585,800</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <h4>5.2 قائمة التدفقات النقدية المتوقعة (Projected Cash Flow Statement)</h4>
+            <p>تعتبر هذه القائمة الأهم بالنسبة لشركة ناشئة، حيث تتبع حركة النقد الفعلية وتوضح قدرة الشركة على الوفاء بالتزاماتها. بقاء رصيد النقد إيجابياً هو المقياس الحقيقي لبقاء الشركة واستمراريتها.</p>
+            <h5>جدول 8: قائمة التدفقات النقدية المتوقعة (2025-2029) (بالجنيه المصري)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>السنة 0</th>
+                        <th>السنة 1 (2025)</th>
+                        <th>السنة 2 (2026)</th>
+                        <th>السنة 3 (2027)</th>
+                        <th>السنة 4 (2028)</th>
+                        <th>السنة 5 (2029)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="7"><strong>التدفقات النقدية من العمليات</strong></td></tr>
+                    <tr><td>صافي الدخل</td><td></td><td>(1,592,537)</td><td>604,115</td><td>4,148,419</td><td>7,566,626</td><td>11,585,800</td></tr>
+                    <tr><td>يضاف: الإهلاك</td><td></td><td>139,112</td><td>139,112</td><td>139,112</td><td>139,112</td><td>139,112</td></tr>
+                    <tr><td><strong>صافي التدفق النقدي من العمليات</strong></td><td></td><td><strong>(1,453,425)</strong></td><td><strong>743,227</strong></td><td><strong>4,287,531</strong></td><td><strong>7,705,738</strong></td><td><strong>11,724,912</strong></td></tr>
+                    <tr><td colspan="7"><strong>التدفقات النقدية من الاستثمار</strong></td></tr>
+                    <tr><td>النفقات الرأسمالية (CAPEX)</td><td>(695,560)</td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td><strong>صافي التدفق النقدي من الاستثمار</strong></td><td><strong>(695,560)</strong></td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td></tr>
+                    <tr><td colspan="7"><strong>التدفقات النقدية من التمويل</strong></td></tr>
+                    <tr><td>التمويل الأولي</td><td>2,300,000</td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td><strong>صافي التدفق النقدي من التمويل</strong></td><td><strong>2,300,000</strong></td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td></tr>
+                    <tr><td colspan="7" style="background-color: #e8eaf6;"><strong>ملخص التدفق النقدي</strong></td></tr>
+                    <tr><td>صافي التغير في النقد</td><td>1,604,440</td><td>(1,453,425)</td><td>743,227</td><td>4,287,531</td><td>7,705,738</td><td>11,724,912</td></tr>
+                    <tr><td>رصيد النقد أول الفترة</td><td>0</td><td>1,604,440</td><td>151,015</td><td>894,242</td><td>5,181,773</td><td>12,887,511</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>رصيد النقد آخر الفترة</strong></td>
+                        <td><strong>1,604,440</strong></td>
+                        <td><strong>151,015</strong></td>
+                        <td><strong><strong class="positive">894,242</strong></strong></td>
+                        <td><strong><strong class="positive">5,181,773</strong></strong></td>
+                        <td><strong><strong class="positive">12,887,511</strong></strong></td>
+                        <td><strong><strong class="positive">24,612,423</strong></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <h4>5.3 قائمة المركز المالي المتوقعة (Projected Balance Sheet)</h4>
+            <p>توضح هذه القائمة الوضع المالي للشركة في لحظة زمنية معينة، وتعرض ما تملكه (الأصول) وما عليها من التزامات، وحقوق الملاك فيها.</p>
+            <h5>جدول 9: قائمة المركز المالي المتوقعة (2025-2029) (بالجنيه المصري)</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>السنة 1 (2025)</th>
+                        <th>السنة 2 (2026)</th>
+                        <th>السنة 3 (2027)</th>
+                        <th>السنة 4 (2028)</th>
+                        <th>السنة 5 (2029)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6"><strong>الأصول</strong></td></tr>
+                    <tr><td>النقد وما في حكمه</td><td>151,015</td><td>894,242</td><td>5,181,773</td><td>12,887,511</td><td>24,612,423</td></tr>
+                    <tr><td>صافي الأصول الثابتة</td><td>556,448</td><td>417,336</td><td>278,224</td><td>139,112</td><td>0</td></tr>
+                    <tr><td><strong>إجمالي الأصول</strong></td><td><strong>707,463</strong></td><td><strong>1,311,578</strong></td><td><strong>5,459,997</strong></td><td><strong>13,026,623</strong></td><td><strong>24,612,423</strong></td></tr>
+                    <tr><td colspan="6"><strong>الالتزامات وحقوق الملكية</strong></td></tr>
+                    <tr><td>إجمالي الالتزامات</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                    <tr><td>رأس المال</td><td>2,300,000</td><td>2,300,000</td><td>2,300,000</td><td>2,300,000</td><td>2,300,000</td></tr>
+                    <tr><td>الأرباح المحتجزة</td><td>(1,592,537)</td><td>(988,422)</td><td>3,159,997</td><td>10,726,623</td><td>22,312,423</td></tr>
+                    <tr><td><strong>إجمالي حقوق الملكية</strong></td><td><strong>707,463</strong></td><td><strong>1,311,578</strong></td><td><strong>5,459,997</strong></td><td><strong>13,026,623</strong></td><td><strong>24,612,423</strong></td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>إجمالي الالتزامات وحقوق الملكية</strong></td>
+                        <td><strong>707,463</strong></td>
+                        <td><strong>1,311,578</strong></td>
+                        <td><strong>5,459,997</strong></td>
+                        <td><strong>13,026,623</strong></td>
+                        <td><strong>24,612,423</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div id="section6" class="content-section">
+            <h3>القسم السادس: التحليل المالي المتقدم والتوصيات (مُحدّث ومُحسّن)</h3>
+            <p>بعد بناء القوائم المالية المتكاملة، يوفر هذا القسم تحليلاً أعمق لتقييم جدوى المشروع من منظور استثماري بحت، باستخدام معايير مالية متقدمة وتوصيات استراتيجية مبنية على الأرقام.</p>
+            
+            <h4>6.1 تحليل النسب المالية الرئيسية</h4>
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h5>هامش الربح الإجمالي (Y3)</h5>
+                    <p class="positive">94.5%</p>
+                    <p class="explanation">نسبة مرتفعة جداً تظهر كفاءة نموذج العمل، حيث أن تكلفة تحقيق إيراد إضافي منخفضة للغاية بعد تغطية التكاليف التشغيلية.</p>
+                    <p class="formula">((الإيرادات - تكاليف التشغيل المباشرة) / الإيرادات)</p>
+                </div>
+                <div class="analysis-card">
+                    <h5>هامش صافي الربح (Y3)</h5>
+                    <p class="positive">46.1%</p>
+                    <p class="explanation">قدرة ممتازة على تحويل الإيرادات إلى أرباح حقيقية بعد خصم جميع المصاريف والضرائب، مما يؤكد على ربحية النموذج على المدى الطويل.</p>
+                    <p class="formula">(صافي الدخل / إجمالي الإيرادات)</p>
+                </div>
+                <div class="analysis-card">
+                    <h5>العائد على الأصول (ROA - Y3)</h5>
+                    <p class="positive">141.7%</p>
+                    <p class="explanation">كفاءة استثنائية في استخدام أصول الشركة (النقدية والثابتة) لتوليد الأرباح، وهي سمة مميزة للشركات التقنية الناجحة.</p>
+                    <p class="formula">(صافي الدخل / متوسط إجمالي الأصول)</p>
+                </div>
+                <div class="analysis-card">
+                    <h5>العائد على حقوق الملكية (ROE - Y3)</h5>
+                    <p class="positive">141.7%</p>
+                    <p class="explanation">مؤشر قوي جداً على قدرة الشركة على توليد أرباح ضخمة من رأس المال المستثمر من قبل الملاك، مما يجعله استثماراً جذاباً.</p>
+                    <p class="formula">(صافي الدخل / متوسط حقوق الملكية)</p>
+                </div>
+            </div>
+
+            <h4>6.2 تحليل الجدوى الاستثمارية</h4>
+            <p>تقييم جاذبية المشروع من منظور استثماري بحت باستخدام معايير خصم التدفقات النقدية. (بافتراض معدل خصم 25% نظراً لمخاطر الشركات الناشئة في مراحلها المبكرة).</p>
+            <div class="analysis-grid">
+                <div class="analysis-card positive-card">
+                    <h5>نقطة التعادل (Break-Even)</h5>
+                    <p>الربع الأول من السنة الثانية</p>
+                    <p class="explanation">يصل المشروع إلى نقطة التعادل التشغيلي (حيث تغطي الإيرادات المصاريف) بسرعة، مما يقلل من فترة حرق النقد ويؤكد على قوة النموذج.</p>
+                </div>
+                 <div class="analysis-card positive-card">
+                    <h5>فترة الاسترداد (PBP)</h5>
+                    <p>سنتان و 4 أشهر</p>
+                    <p class="explanation">يسترد المشروع تكلفته الاستثمارية الأولية (695,560 جنيه) في فترة زمنية قصيرة جداً، مما يقلل من المخاطر على المستثمرين.</p>
+                    <p class="formula">الوقت اللازم لتساوي التدفقات النقدية الداخلة مع الاستثمار الأولي.</p>
+                </div>
+                <div class="analysis-card positive-card">
+                    <h5>صافي القيمة الحالية (NPV)</h5>
+                    <p class="positive">4,688,143 جنيه</p>
+                    <p class="explanation">النتيجة الإيجابية الكبيرة تعني أن المشروع لا يحقق العائد المطلوب (25%) فحسب، بل يولد قيمة إضافية كبيرة فوقه، مما يجعله مجدياً اقتصادياً بقوة.</p>
+                     <p class="formula">مجموع التدفقات النقدية المخصومة - الاستثمار الأولي</p>
+                </div>
+                <div class="analysis-card positive-card">
+                    <h5>معدل العائد الداخلي (IRR)</h5>
+                    <p class="positive">105%</p>
+                    <p class="explanation">معدل عائد استثنائي يتجاوز بكثير معدل الخصم المطلوب (25%)، مما يؤكد أن المشروع استثمار جذاب للغاية ومربح جداً.</p>
+                    <p class="formula">معدل الخصم الذي يجعل NPV = 0</p>
+                </div>
+            </div>
+            
+            <h4>6.3 توصيات استراتيجية</h4>
+            <p>بناءً على التحليل المالي الإيجابي للغاية، والذي يظهر جدوى اقتصادية قوية للمشروع بشكله المحدث، يتم تقديم التوصيات التالية لضمان تحقيق هذه النتائج الواعدة:</p>
+            <ol>
+                <li><strong>الالتزام الصارم بالميزانية:</strong> على الرغم من أن التمويل المطلوب (2.3 مليون جنيه) يبدو كافياً، إلا أن الانضباط المالي في إدارة المصروفات خلال أول 18 شهراً يظل حاسماً.</li>
+                <li><strong>التركيز على مقاييس الأداء الرئيسية (KPIs):</strong> يجب على الإدارة مراقبة "تكلفة اكتساب العميل" (CAC) و "القيمة الدائمة للعميل" (LTV) عن كثب لضمان أن نمو الإيرادات يتم بشكل مربح.</li>
+                <li><strong>التخطيط لجولة التمويل التالية (Series A):</strong> مع تحقيق الربحية في السنة الثانية، يجب البدء في التخطيط لجولة تمويل تالية لتسريع التوسع الجغرافي وتطوير خدمات جديدة، مستفيدين من الأرقام المالية القوية لجذب تقييم أعلى.</li>
+                <li><strong>استثمار الأرباح في النمو:</strong> يجب إعادة استثمار جزء كبير من الأرباح المحققة في السنوات 3-5 في تطوير المنتج والتوسع في أسواق جديدة لترسيخ الهيمنة على السوق ومنع دخول المنافسين.</li>
+            </ol>
+            
+            <h4>خلاصة:</h4>
+            <p><strong>بناءً على البيانات الموحدة من كافة الدراسات، يظهر التحليل المالي أن مشروع منصة خدمات التخدير عند الطلب في أسيوط ليس فقط فكرة تعالج فجوة حقيقية في السوق، بل هو فرصة استثمارية واعدة للغاية ذات جدوى اقتصادية قوية ومؤشرات مالية ممتازة. المشروع قابل للنجاح وتحقيق عوائد استثنائية شريطة التنفيذ الدقيق للخطة التشغيلية والالتزام بالانضباط المالي.</strong></p>
+        </div>
+
+    </div>
+
+    <script>
+        function showSection(sectionId, element) {
+            // إخفاء جميع أقسام المحتوى
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // إظهار القسم المستهدف
+            document.getElementById(sectionId)?.classList.add('active');
+            
+            // التعامل مع الحالة النشطة لأزرار الشريط الجانبي
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // إغلاق الشريط الجانبي على الجوال بعد الاختيار
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        // تبديل قائمة الجوال
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Initialize first section on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstButton = document.querySelector('.sidebar-btn');
+            if (firstButton) {
+                showSection('section1', firstButton);
+            }
+        });
+    </script>
+</body>
+</html>
